@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -26,11 +28,14 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
+@RefreshScope // 动态刷新配置中心的配置
 public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, Ordered {
-
-    private static final Integer continuesCounts = 3;
-    private static final Duration timeInterval = Duration.ofSeconds(20);
-    private static final Duration limitTime = Duration.ofSeconds(30);
+    @Value("${black-ip.continue-count}")
+    private Integer continueCount;
+    @Value("${black-ip.time-interval}")
+    private Duration timeInterval;
+    @Value("${black-ip.limit-time}")
+    private Duration limitTime;
 
     /**
      * 判断某个请求的 IP 在 20 秒内的请求次数是否超过 3 次
@@ -69,7 +74,7 @@ public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, O
         }
 
         // 判断是否超限
-        if (requestCount > continuesCounts) {
+        if (requestCount > continueCount) {
             redis.set(ipRedisKeyLimit, ipRedisKeyLimit, limitTime);
             return renderErrorMsg(exchange, ResponseStatusEnum.SYSTEM_ERROR_BLACK_IP);
         }

@@ -1,0 +1,22 @@
+# 服务注册与发现
+spring:
+  application:
+    name: gateway
+  profiles:
+    active: dev
+  config:
+    import:
+      - optional:nacos:gateway-${spring.profiles.active}.yaml?group=DEFAULT_GROUP&refresh=true
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        refresh-enabled: true # 启用自动刷新
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
