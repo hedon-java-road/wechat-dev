@@ -1,0 +1,39 @@
+# 服务注册与发现
+spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true # 开启从注册中心动态获取服务，根据服务名进行负载均衡
+          routes:
+            - id: authRoute
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+            - id: fileRoute
+              uri: lb://file-service
+              predicates:
+                - Path=/api/file/**
+            - id: mainRoute
+              uri: lb://main-service
+              predicates:
+                - Path=/api/main/**
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowed-origin-patterns: "*"
+                allowed-headers: "*"
+                allowed-methods: "*"
+                allow-credentials: true

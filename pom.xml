@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hedon</groupId>
+    <artifactId>wechat-dev</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!--
+        打包方式：
+        pom - 用于父工程/聚合工程
+            不会打包成 jar 或 war
+            主要用于管理子模块和统一依赖版本
+            可以在 <modules> 中声明子模块（如你的 wechat-common）
+            可以在 <dependencyManagement> 中统一管理依赖版本
+        jar - 默认方式
+            打包成 .jar 文件
+            Spring Boot 项目通常使用这种方式
+            可以直接通过 java -jar 运行
+        war - Web 应用
+            打包成 .war 文件
+            需要部署到 Tomcat 等 Servlet 容器中运行
+            传统 Java Web 项目使用
+    -->
+    <packaging>pom</packaging>
+    <modules>
+        <module>wechat-common</module>
+        <module>wechat-pojo</module>
+        <module>api</module>
+        <module>gateway</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <parent>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.9</version>
+        <relativePath></relativePath>
+    </parent>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!--
+            https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2025.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--
+            https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2025.0.0.0</version>
+                <type>pom</type> <!-- 只是一个包含其他依赖版本信息，不引入 jar 包 -->
+                <scope>import</scope> <!--版本信息被导入，子模块可以省略版本号-->
+            </dependency>
+
+            <!-- apache 工具类 -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
